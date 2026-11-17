@@ -11,7 +11,7 @@ export interface Repo {
 export function localRepo(): Repo {
   const KEY = "chitieu2:local:v2";
   const read = (): Data => {
-    try { const raw = localStorage.getItem(KEY); if (raw) { const p = JSON.parse(raw); return { expenses: p.expenses ?? [], shifts: p.shifts ?? [], salaries: p.salaries ?? [] }; } } catch {}
+    try { const raw = localStorage.getItem(KEY); if (raw) { const p = JSON.parse(raw); return { expenses: p.expenses ?? [], shifts: p.shifts ?? [], salaries: (p.salaries ?? []).map((x: Salary) => ({ ...x, installment: x.installment === 2 ? 2 : 1 })) }; } } catch {}
     return { ...EMPTY };
   };
   const write = (d: Data) => { try { localStorage.setItem(KEY, JSON.stringify(d)); } catch {} };
@@ -41,7 +41,7 @@ export function supabaseRepo(): Repo {
       ]);
       fail(e.error); fail(s.error);
       // Nếu chưa chạy SQL 0003 (chưa có bảng salaries) thì bỏ qua, không làm hỏng cả web.
-      const salaries = sal.error ? [] : ((sal.data ?? []).map((r) => pick(r, ["id", "month", "amount"])) as unknown as Salary[]);
+      const salaries = sal.error ? [] : ((sal.data ?? []).map((r) => ({ id: r.id, month: r.month, installment: (Number(r.installment) === 2 ? 2 : 1) as 1 | 2, amount: Number(r.amount) })));
       return {
         salaries,
         expenses: (e.data ?? []).map((r) => pick(r, ["id", "date", "description", "category", "amount"])) as unknown as Expense[],

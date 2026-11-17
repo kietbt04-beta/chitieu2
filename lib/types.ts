@@ -1,7 +1,7 @@
 export interface Expense { id: string; date: string; description: string; category: string; amount: number }
 export interface Shift { id: string; date: string; hours: number; orders: number; earnings: number; fuel_cost: number; other_cost: number }
-/** Lương tháng: mỗi tháng một khoản (month dạng "YYYY-MM"). */
-export interface Salary { id: string; month: string; amount: number }
+/** Lương tháng: mỗi tháng tối đa 2 đợt (installment 1 hoặc 2), month dạng "YYYY-MM". */
+export interface Salary { id: string; month: string; installment: 1 | 2; amount: number }
 export interface Data { expenses: Expense[]; shifts: Shift[]; salaries: Salary[] }
 export type Table = keyof Data;
 export const EMPTY: Data = { expenses: [], shifts: [], salaries: [] };
