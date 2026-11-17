@@ -1,37 +1,42 @@
 "use client";
 import { useApp } from "@/components/AppProvider";
 import ExpenseTable from "@/components/ExpenseTable";
+import SalaryCard from "@/components/SalaryCard";
 import { Card, CatBars, Kpi, PageHead, PeriodFilter } from "@/components/ui";
-import { byCategory, shiftProfit, sum } from "@/lib/calc";
+import { byCategory, salaryInRange, shiftProfit, sum } from "@/lib/calc";
 import { fmt } from "@/lib/format";
 import { inRange } from "@/lib/period";
 
 export default function Reports() {
-  const { data, range } = useApp();
+  const { data, range, period } = useApp();
   const exp = data.expenses.filter((e) => inRange(e.date, range)).sort((a, b) => b.date.localeCompare(a.date));
   const sh = data.shifts.filter((s) => inRange(s.date, range));
   const spent = sum(exp.map((e) => e.amount)), earn = sum(sh.map((s) => s.earnings)), profit = sum(sh.map(shiftProfit));
+  const salary = salaryInRange(data.salaries, range, period);
+  const income = salary + earn, left = income - spent;
   return (
     <>
-      <PageHead title="Báo cáo tháng" sub="Cuối kỳ xem lại tiền đã chi và thu nhập ShopeeFood." />
+      <PageHead title="Báo cáo tháng" sub="Cuối kỳ xem lại tiền đã chi, lương và thu nhập ShopeeFood." />
       <PeriodFilter />
       <div className="kpis">
         <Kpi cls="red" title="Đã chi" value={spent} desc="Tổng tiền ra thực tế" icon="↗" />
         <Kpi cls="green" title="ShopeeFood kiếm được" value={earn} desc="Tiền công đã ghi nhận" icon="♧" />
         <Kpi cls="purple" title="Lợi nhuận chạy xe" value={profit} desc="Sau chi phí ShopeeFood" icon="◈" />
-        <Kpi cls="dark" title="Thu nhập − chi tiêu" value={earn - spent} desc="ShopeeFood kiếm được trừ tổng chi" icon="▣" />
+        <Kpi cls="dark" title="Thu nhập − chi tiêu" value={left} desc="Lương + ShopeeFood − tổng chi" icon="▣" />
       </div>
       <div className="two sect">
         <Card title="Tôi đã chi những gì?"><CatBars data={byCategory(exp)} /></Card>
         <Card title="Kết quả thu chi">
-          <div className="minirow"><span>Thu nhập ShopeeFood</span><span className="rvalue pos">{fmt(earn)}</span></div>
-          <div className="minirow"><span>Xăng phân bổ</span><span className="rvalue neg">{fmt(sum(sh.map((s) => s.fuel_cost)))}</span></div>
-          <div className="minirow"><span>Chi phí khác của ca</span><span className="rvalue neg">{fmt(sum(sh.map((s) => s.other_cost)))}</span></div>
-          <div className="minirow"><b>Lợi nhuận ShopeeFood</b><span className="rvalue pos">{fmt(profit)}</span></div>
-          <div className="minirow"><b>Thu nhập − tổng chi tiêu</b><span className={`rvalue ${earn - spent >= 0 ? "pos" : "neg"}`}>{fmt(earn - spent)}</span></div>
-          <div className="footnote">Xăng phân bổ cho ca không bị trừ lần hai khỏi tiền đã chi.</div>
+          <div className="minirow"><span>💼 Lương tháng</span><span className="rvalue pos">{fmt(salary)}</span></div>
+          <div className="minirow"><span>♧ Thu nhập ShopeeFood</span><span className="rvalue pos">{fmt(earn)}</span></div>
+          <div className="minirow"><b>Tổng thu nhập</b><span className="rvalue pos">{fmt(income)}</span></div>
+          <div className="minirow"><span>Tổng chi tiêu</span><span className="rvalue neg">−{fmt(spent)}</span></div>
+          <div className="minirow"><b>Thu nhập − chi tiêu</b><span className={`rvalue ${left >= 0 ? "pos" : "neg"}`}>{fmt(left)}</span></div>
+          {(period === "Ngày" || period === "Tuần") && <div className="alertline" style={{ marginTop: 10 }}>Lương tính theo tháng nên không hiện khi xem theo Ngày hoặc Tuần. Chọn Tháng, Quý hoặc Năm để thấy lương.</div>}
+          <div className="footnote">Lợi nhuận chạy xe {fmt(profit)} (đã trừ xăng phân bổ {fmt(sum(sh.map((s) => s.fuel_cost)))} và chi phí khác {fmt(sum(sh.map((s) => s.other_cost)))}) chỉ để tham khảo; xăng đã nằm trong tổng chi tiêu nên không bị trừ hai lần.</div>
         </Card>
       </div>
+      <SalaryCard />
       <Card title="Nhật ký chi tiêu" chip={`${exp.length} khoản`} className="sect"><ExpenseTable rows={exp} editable={false} /></Card>
     </>
   );

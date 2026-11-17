@@ -1,9 +1,9 @@
-import { Data, EMPTY, Expense, Shift, Table } from "./types";
+import { Data, EMPTY, Expense, Salary, Shift, Table } from "./types";
 import { getSupabase } from "./supabase";
 
 export interface Repo {
   load(): Promise<Data>;
-  upsert(table: Table, row: Expense | Shift): Promise<void>;
+  upsert(table: Table, row: Expense | Shift | Salary): Promise<void>;
   remove(table: Table, id: string): Promise<void>;
 }
 
@@ -11,7 +11,7 @@ export interface Repo {
 export function localRepo(): Repo {
   const KEY = "chitieu2:local:v2";
   const read = (): Data => {
-    try { const raw = localStorage.getItem(KEY); if (raw) { const p = JSON.parse(raw); return { expenses: p.expenses ?? [], shifts: p.shifts ?? [] }; } } catch {}
+    try { const raw = localStorage.getItem(KEY); if (raw) { const p = JSON.parse(raw); return { expenses: p.expenses ?? [], shifts: p.shifts ?? [], salaries: p.salaries ?? [] }; } } catch {}
     return { ...EMPTY };
   };
   const write = (d: Data) => { try { localStorage.setItem(KEY, JSON.stringify(d)); } catch {} };
@@ -34,12 +34,16 @@ export function supabaseRepo(): Repo {
   const pick = <T extends Record<string, unknown>>(r: T, keys: string[]) => Object.fromEntries(keys.map((k) => [k, r[k]]));
   return {
     async load() {
-      const [e, s] = await Promise.all([
+      const [e, s, sal] = await Promise.all([
         sb.from("expenses").select("*").order("date", { ascending: false }),
         sb.from("shifts").select("*").order("date", { ascending: false }),
+        sb.from("salaries").select("*").order("month", { ascending: false }),
       ]);
       fail(e.error); fail(s.error);
+      // Nếu chưa chạy SQL 0003 (chưa có bảng salaries) thì bỏ qua, không làm hỏng cả web.
+      const salaries = sal.error ? [] : ((sal.data ?? []).map((r) => pick(r, ["id", "month", "amount"])) as unknown as Salary[]);
       return {
+        salaries,
         expenses: (e.data ?? []).map((r) => pick(r, ["id", "date", "description", "category", "amount"])) as unknown as Expense[],
         shifts: (s.data ?? []).map((r) => pick(r, ["id", "date", "hours", "orders", "earnings", "fuel_cost", "other_cost"])) as unknown as Shift[],
       };

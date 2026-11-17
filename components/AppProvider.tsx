@@ -1,12 +1,12 @@
 "use client";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { Data, EMPTY, Expense, Shift, Table } from "@/lib/types";
+import { Data, EMPTY, Expense, Salary, Shift, Table } from "@/lib/types";
 import { Repo, localRepo, supabaseRepo } from "@/lib/repo";
 import { getSupabase, supabaseConfigured } from "@/lib/supabase";
 import { Period, getRange } from "@/lib/period";
 
-type Row = Expense | Shift;
+type Row = Expense | Shift | Salary;
 interface Ctx {
   data: Data; ready: boolean; local: boolean; email: string | null;
   period: Period; shift: number; setPeriod(p: Period): void; setShift(n: number): void; range: ReturnType<typeof getRange>;
@@ -87,4 +87,4 @@ export default function AppProvider({ children }: { children: React.ReactNode })
     </C.Provider>
   );
 }
-export type { Expense, Shift };
+export type { Expense, Shift, Salary };
