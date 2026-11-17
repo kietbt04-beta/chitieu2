@@ -1,26 +1,22 @@
 "use client";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { Data, EMPTY, Expense, Shift, Table, Transfer, Wallet } from "@/lib/types";
+import { Data, EMPTY, Expense, Shift, Table } from "@/lib/types";
 import { Repo, localRepo, supabaseRepo } from "@/lib/repo";
 import { getSupabase, supabaseConfigured } from "@/lib/supabase";
 import { Period, getRange } from "@/lib/period";
-import { totalBalance, walletBalance } from "@/lib/calc";
-import { fmt, uid } from "@/lib/format";
 
-type Row = Wallet | Expense | Shift | Transfer;
+type Row = Expense | Shift;
 interface Ctx {
   data: Data; ready: boolean; local: boolean; email: string | null;
   period: Period; shift: number; setPeriod(p: Period): void; setShift(n: number): void; range: ReturnType<typeof getRange>;
   save(table: Table, row: Row): Promise<boolean>;
   remove(table: Table, id: string): Promise<boolean>;
-  saveTransfer(t: Omit<Transfer, "id"> & { id?: string }): Promise<boolean>;
   toast(msg: string): void; logout(): Promise<void>;
   dark: boolean; toggleDark(): void;
 }
 const C = createContext<Ctx>(null as never);
 export const useApp = () => useContext(C);
-export const useWalletName = () => { const { data } = useApp(); return (id: string | null) => data.wallets.find((w) => w.id === id)?.name ?? "—"; };
 
 export default function AppProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter(); const path = usePathname();
@@ -77,23 +73,13 @@ export default function AppProvider({ children }: { children: React.ReactNode })
   const remove = useCallback(async (table: Table, id: string) =>
     persist((d) => ({ ...d, [table]: (d[table] as Row[]).filter((x) => x.id !== id) }) as Data, () => repo.current!.remove(table, id)), [persist]);
 
-  const saveTransfer: Ctx["saveTransfer"] = useCallback(async (t) => {
-    const d = dataRef.current;
-    if (t.from_wallet === t.to_wallet) { toast("Hai ví phải khác nhau."); return false; }
-    if (!(t.amount > 0)) { toast("Số tiền phải lớn hơn 0."); return false; }
-    const old = t.id ? d.transfers.find((x) => x.id === t.id) : undefined;
-    const avail = walletBalance(d, t.from_wallet) + (old && old.from_wallet === t.from_wallet ? old.amount : 0);
-    if (t.amount > avail) { toast(`Số dư ví nguồn không đủ (còn ${fmt(avail)}).`); return false; }
-    return save("transfers", { ...t, id: t.id ?? uid() } as Transfer);
-  }, [save, toast]);
-
   const logout = useCallback(async () => { await getSupabase()?.auth.signOut(); router.replace("/login"); }, [router]);
   const setPeriod = (p: Period) => { setPeriodState(p); setShift(0); };
   const range = useMemo(() => getRange(period, shift), [period, shift]);
   const toggleDark = () => setDark((v) => { try { localStorage.setItem("chitieu2:dark", v ? "0" : "1"); } catch {} return !v; });
 
-  void path; void totalBalance;
-  const value: Ctx = { data, ready, local: !supabaseConfigured, email, period, shift, setPeriod, setShift, range, save, remove, saveTransfer, toast, logout, dark, toggleDark };
+  void path;
+  const value: Ctx = { data, ready, local: !supabaseConfigured, email, period, shift, setPeriod, setShift, range, save, remove, toast, logout, dark, toggleDark };
   return (
     <C.Provider value={value}>
       {children}
@@ -101,4 +87,4 @@ export default function AppProvider({ children }: { children: React.ReactNode })
     </C.Provider>
   );
 }
-export type { Expense, Shift, Wallet };
+export type { Expense, Shift };

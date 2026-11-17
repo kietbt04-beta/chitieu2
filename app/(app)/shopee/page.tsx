@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { useApp, useWalletName } from "@/components/AppProvider";
+import { useApp } from "@/components/AppProvider";
 import { ShiftForm } from "@/components/forms";
 import { Bars, Card, Kpi, PageHead, PeriodFilter } from "@/components/ui";
 import { shiftProfit, sum } from "@/lib/calc";
@@ -9,7 +9,7 @@ import { getBuckets, inRange } from "@/lib/period";
 import { FUEL_CAT, Shift } from "@/lib/types";
 
 export default function Shopee() {
-  const { data, range, period, shift, remove, toast } = useApp(); const wname = useWalletName();
+  const { data, range, period, shift, remove, toast } = useApp();
   const [form, setForm] = useState<Shift | "new" | null>(null);
   const shifts = data.shifts.filter((s) => inRange(s.date, range)).sort((a, b) => b.date.localeCompare(a.date));
   const hours = sum(shifts.map((s) => s.hours)), orders = sum(shifts.map((s) => s.orders));
@@ -20,7 +20,7 @@ export default function Shopee() {
     <>
       <PageHead title="Tài xế ShopeeFood" sub="Theo dõi tiền công kiếm được, số ca và chi phí chạy xe." action="Thêm ca làm việc" onAction={() => setForm("new")} />
       <PeriodFilter />
-      <div className="infonote">✦ Không cần nhập từng đơn tiền mặt hay từng lần nạp ví app. Khi app chốt thu nhập, chỉ ghi <b>tổng thu nhập của ca</b> một lần.</div>
+      <div className="infonote">✦ Không cần nhập từng đơn. Khi app chốt thu nhập, chỉ ghi <b>tổng thu nhập của ca</b> một lần.</div>
       <div className="kpis">
         <Kpi cls="green" title="Thu nhập ShopeeFood" value={earn} desc="Tổng tiền kiếm được trong kỳ" icon="↗" />
         <Kpi cls="red" title="Xăng & chi phí chạy xe" value={fuel + other} desc="Xăng phân bổ + chi phí khác của ca" icon="⛽" />
@@ -40,17 +40,16 @@ export default function Shopee() {
       <Card title="Quản lý ca làm việc" chip={`${shifts.length} ca`} className="sect">
         {!shifts.length ? <div className="empty">Chưa có ca nào trong kỳ này.</div> : (
           <div className="tablewrap"><table className="data">
-            <thead><tr><th>Ngày chạy</th><th>Giờ</th><th>Đơn</th><th>Thu nhập</th><th>Xăng</th><th>Chi phí khác</th><th>Nhận về</th><th style={{ textAlign: "right" }}>Lợi nhuận</th><th /></tr></thead>
+            <thead><tr><th>Ngày chạy</th><th>Giờ</th><th>Đơn</th><th>Thu nhập</th><th>Xăng</th><th>Chi phí khác</th><th style={{ textAlign: "right" }}>Lợi nhuận</th><th /></tr></thead>
             <tbody>{shifts.map((x) => (
               <tr key={x.id}>
-                <td><b>{viDate(x.date)}</b></td><td>{x.hours}</td><td>{x.orders}</td><td className="pos">{fmt(x.earnings)}</td><td>{fmt(x.fuel_cost)}</td><td>{fmt(x.other_cost)}</td>
-                <td>{x.wallet_id ? wname(x.wallet_id) : <span className="tag">Chưa nhận</span>}</td><td className="money pos">{fmt(shiftProfit(x))}</td>
+                <td><b>{viDate(x.date)}</b></td><td>{x.hours}</td><td>{x.orders}</td><td className="pos">{fmt(x.earnings)}</td><td>{fmt(x.fuel_cost)}</td><td>{fmt(x.other_cost)}</td><td className="money pos">{fmt(shiftProfit(x))}</td>
                 <td><div className="rowact"><button className="btn sm" onClick={() => setForm(x)}>Sửa</button>
-                  <button className="btn sm danger" onClick={async () => { if (confirm("Xóa ca này? Nếu tiền công đã về ví, số dư ví sẽ giảm tương ứng.") && (await remove("shifts", x.id))) toast("Đã xóa ca."); }}>Xóa</button></div></td>
+                  <button className="btn sm danger" onClick={async () => { if (confirm("Xóa ca này?") && (await remove("shifts", x.id))) toast("Đã xóa ca."); }}>Xóa</button></div></td>
               </tr>))}</tbody>
           </table></div>
         )}
-        <div className="footnote">Xăng đổ 100k ghi một lần ở Chi tiêu; phân bổ 30k cho ca A và 20k cho ca B chỉ để tính lợi nhuận, không trừ ví thêm.</div>
+        <div className="footnote">Xăng đổ 100k ghi một lần ở Chi tiêu; phân bổ 30k cho ca A và 20k cho ca B chỉ để tính lợi nhuận, không tính thêm vào tiền đã chi.</div>
       </Card>
       {form && <ShiftForm initial={form === "new" ? undefined : form} onClose={() => setForm(null)} />}
     </>

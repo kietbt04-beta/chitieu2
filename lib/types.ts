@@ -1,11 +1,8 @@
-export type WalletKind = "cash" | "bank" | "other";
-export interface Wallet { id: string; name: string; kind: WalletKind; opening_balance: number }
-export interface Expense { id: string; date: string; description: string; category: string; amount: number; wallet_id: string }
-export interface Shift { id: string; date: string; hours: number; orders: number; earnings: number; fuel_cost: number; other_cost: number; wallet_id: string | null }
-export interface Transfer { id: string; date: string; from_wallet: string; to_wallet: string; amount: number }
-export interface Data { wallets: Wallet[]; expenses: Expense[]; shifts: Shift[]; transfers: Transfer[] }
+export interface Expense { id: string; date: string; description: string; category: string; amount: number }
+export interface Shift { id: string; date: string; hours: number; orders: number; earnings: number; fuel_cost: number; other_cost: number }
+export interface Data { expenses: Expense[]; shifts: Shift[] }
 export type Table = keyof Data;
-export const EMPTY: Data = { wallets: [], expenses: [], shifts: [], transfers: [] };
+export const EMPTY: Data = { expenses: [], shifts: [] };
 
 export const CATS: Record<string, { icon: string; color: string }> = {
   "Ăn uống": { icon: "🍜", color: "#f59b72" },

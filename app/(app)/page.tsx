@@ -2,7 +2,7 @@
 import { useMemo, useState } from "react";
 import { useApp } from "@/components/AppProvider";
 import { Bars, Card, Donut, Kpi, PageHead, PeriodFilter } from "@/components/ui";
-import { byCategory, shiftProfit, sum, totalBalance } from "@/lib/calc";
+import { byCategory, shiftProfit, sum } from "@/lib/calc";
 import { fmt, viDate } from "@/lib/format";
 import { getBuckets, inRange } from "@/lib/period";
 import { CATS } from "@/lib/types";
@@ -43,7 +43,7 @@ export default function Overview() {
             <Kpi cls="red" title="Tổng chi tiêu" value={spent} desc="Tiền đã thực chi trong kỳ" icon="↗" />
             <Kpi cls="purple" title="Số khoản chi" value={exp.length} raw desc="Giao dịch trong kỳ" icon="▤" />
             <Kpi cls="green" title="Khoản chi lớn nhất" value={top[0]?.amount ?? 0} desc={top[0]?.description ?? "Chưa có khoản chi"} icon="🔥" />
-            <Kpi cls="dark" title="Tổng số dư hiện có" value={totalBalance(data)} desc="Tất cả các ví" icon="▣" />
+            <Kpi cls="dark" title="Chi trung bình mỗi ngày" value={fcSpend.avg} desc="Tính từ đầu tháng đến hôm nay" icon="◷" />
           </div>
           <div className="sect"><ForecastCard title="🔮 Dự đoán chi tiêu tháng này" noun="Đã chi" f={fcSpend} color="#ea5964" good="low" /></div>
           <div className="two sect">
