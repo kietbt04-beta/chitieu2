@@ -27,7 +27,8 @@ export default function Shell({ children }: { children: React.ReactNode }) {
     <div className="layout">
       <aside className={`sidebar ${open ? "open" : ""}`}>
         <Link href="/" className="brand" style={{ textDecoration: "none", color: "inherit" }}>
-          <div className="klogo">K</div><div><h3>Bùi Thế Kiệt</h3><p>Quản lý chi tiêu cá nhân</p></div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img className="avatarimg" src="/avatar-256.png" alt="Kiệt Beta" width={43} height={43} /><div><h3>Bùi Thế Kiệt</h3><p>Quản lý chi tiêu cá nhân</p></div>
         </Link>
         <nav className="nav">
           {NAV.map(([label, href, icon, text]) => (

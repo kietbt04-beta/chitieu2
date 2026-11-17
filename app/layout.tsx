@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: "Bùi Thế Kiệt — Chi tiêu & ShopeeFood",
   description: "Quản lý chi tiêu và thu nhập ShopeeFood",
   applicationName: "Chi tiêu Kiệt",
-  icons: { icon: "/pwa-icon/192", apple: "/pwa-icon/192" },
+  icons: { icon: "/icon-192.png", apple: "/icon-192.png" },
   appleWebApp: { capable: true, title: "Chi tiêu Kiệt", statusBarStyle: "default" },
 };
 export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#7c3aed" };

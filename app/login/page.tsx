@@ -28,7 +28,8 @@ export default function Login() {
   }
   return (
     <div className="loginwrap"><form className="loginbox" onSubmit={submit}>
-      <div className="klogo">K</div>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img className="avatarimg" src="/avatar-256.png" alt="Kiệt Beta" width={64} height={64} style={{ width: 64, height: 64 }} />
       <h1>Bùi Thế Kiệt</h1><p className="hint" style={{ marginBottom: 20 }}>Chi tiêu & ShopeeFood · {mode === "in" ? "Đăng nhập" : "Tạo tài khoản"}</p>
       <div className="field"><label>Email</label><input name="email" type="email" autoComplete="email" required /></div>
       <div className="field"><label>Mật khẩu</label><input name="password" type="password" autoComplete={mode === "in" ? "current-password" : "new-password"} required /></div>
