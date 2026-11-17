@@ -73,22 +73,22 @@ export function Donut({ data }: { data: [string, number][] }) {
 }
 
 export interface BarDatum { bucket: Bucket; a: number; b: number }
-export function Bars({ title, chip, data, la, lb }: { title: string; chip: string; data: BarDatum[]; la: string; lb: string }) {
-  const max = Math.max(...data.map((d) => Math.max(d.a, d.b)), 1);
+export function Bars({ title, chip, data, la, lb, hideA }: { title: string; chip: string; data: BarDatum[]; la: string; lb: string; hideA?: boolean }) {
+  const max = Math.max(...data.map((d) => Math.max(hideA ? 0 : d.a, d.b)), 1);
   return (
     <Card title={title} chip={chip}>
       <div className="bars">
         {data.map((d, i) => (
           <div className="bargroup" key={i}>
             <div className="barpair">
-              <div className="bar income" title={`${la}: ${fmt(d.a)}`} style={{ height: `${(d.a / max) * 100}%` }} />
+              {!hideA && <div className="bar income" title={`${la}: ${fmt(d.a)}`} style={{ height: `${(d.a / max) * 100}%` }} />}
               <div className="bar expense" title={`${lb}: ${fmt(d.b)}`} style={{ height: `${(d.b / max) * 100}%` }} />
             </div>
             <div className="barname">{d.bucket.label}</div>
           </div>
         ))}
       </div>
-      <div className="legend"><span><i className="dot" style={{ background: "#1ab47f" }} />{la}</span><span><i className="dot" style={{ background: "#ef5b59" }} />{lb}</span></div>
+      <div className="legend">{!hideA && <span><i className="dot" style={{ background: "#1ab47f" }} />{la}</span>}<span><i className="dot" style={{ background: "#ef5b59" }} />{lb}</span></div>
     </Card>
   );
 }
