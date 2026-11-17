@@ -1,0 +1,12 @@
+.env*
+!.env.example
+node_modules/
+.next/
+dist/
+.vercel/
+*.sql.zip
+*backup*.zip
+*.csv
+dev.log
+*.tsbuildinfo
+buikiet-chitieu-web-rieng-starter/
