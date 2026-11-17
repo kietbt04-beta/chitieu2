@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useApp } from "./AppProvider";
 
 const NAV: [string, string, string, string][] = [
-  ["TRANG CHÍNH", "/", "▦", "Tổng quan"],
+  ["TRANG CHÍNH", "/", "▦", "Dashboard"],
   ["CHI TIÊU", "/chi-tieu", "▤", "Chi tiêu hằng ngày"],
   ["", "/danh-muc", "◈", "Danh mục chi tiêu"],
   ["CÔNG VIỆC", "/shopee", "♧", "Tài xế ShopeeFood"],

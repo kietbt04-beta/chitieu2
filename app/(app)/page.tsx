@@ -10,7 +10,7 @@ import { monthForecast } from "@/lib/forecast";
 import ForecastCard from "@/components/ForecastCard";
 
 type View = "chi" | "shopee";
-const TABS: [View, string][] = [["chi", "Chi tiêu"], ["shopee", "ShopeeFood"]];
+const TABS: [View, string][] = [["chi", "Spend"], ["shopee", "Driver"]];
 
 export default function Overview() {
   const { data, range, period, shift } = useApp();
@@ -29,7 +29,7 @@ export default function Overview() {
 
   return (
     <>
-      <PageHead title="Tổng quan" sub="Đã chi những gì và thu nhập ShopeeFood được bao nhiêu?" />
+      <PageHead title="Dashboard" sub="Đã chi những gì và thu nhập ShopeeFood được bao nhiêu?" />
       <div className="period" style={{ display: "inline-flex", marginBottom: 20 }} role="tablist">
         {TABS.map(([k, label]) => (
           <button key={k} role="tab" aria-selected={view === k} className={view === k ? "active" : ""} style={{ padding: "10px 22px", fontSize: 13 }} onClick={() => setView(k)}>{label}</button>
