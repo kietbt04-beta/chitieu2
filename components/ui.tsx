@@ -1,5 +1,5 @@
 "use client";
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { fmt } from "@/lib/format";
 import { CATS } from "@/lib/types";
 import { PERIODS, Bucket } from "@/lib/period";
@@ -114,3 +114,16 @@ export function Modal({ title, onClose, children }: { title: string; onClose: ()
 }
 
 export const Field = ({ label, children }: { label: string; children: ReactNode }) => <div className="field"><label>{label}</label>{children}</div>;
+
+/** Ô nhập tiền: tự thêm dấu chấm hàng nghìn khi gõ (10000 → 10.000). Giá trị thật gửi đi là số nguyên. */
+export function MoneyInput({ name, defaultValue, required }: { name: string; defaultValue?: number; required?: boolean }) {
+  const [raw, setRaw] = useState(defaultValue !== undefined ? String(defaultValue) : "");
+  const digits = raw.replace(/\D/g, "").replace(/^0+(?=\d)/, "");
+  const shown = digits ? new Intl.NumberFormat("vi-VN").format(Number(digits)) : "";
+  return (
+    <>
+      <input inputMode="numeric" autoComplete="off" value={shown} required={required} onChange={(e) => setRaw(e.target.value)} placeholder="0" />
+      <input type="hidden" name={name} value={digits} />
+    </>
+  );
+}

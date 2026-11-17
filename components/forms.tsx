@@ -3,7 +3,7 @@ import { FormEvent, useState } from "react";
 import { CATS, Expense, Shift } from "@/lib/types";
 import { todayIso, uid } from "@/lib/format";
 import { useApp } from "./AppProvider";
-import { Field, Modal } from "./ui";
+import { Field, Modal, MoneyInput } from "./ui";
 
 const num = (fd: FormData, k: string) => Number(fd.get(k));
 const str = (fd: FormData, k: string) => String(fd.get(k) ?? "").trim();
@@ -28,7 +28,7 @@ export function ExpenseForm({ initial, onClose }: { initial?: Expense; onClose: 
       <form onSubmit={submit}>
         <Field label="Khoản chi"><input name="description" defaultValue={initial?.description} placeholder="Ví dụ: Ăn cơm, đổ xăng..." required autoFocus /></Field>
         <div className="formgrid">
-          <Field label="Số tiền (đ)"><input name="amount" type="number" min="1" step="1" defaultValue={initial?.amount} required /></Field>
+          <Field label="Số tiền (đ)"><MoneyInput name="amount" defaultValue={initial?.amount} required /></Field>
           <Field label="Ngày chi"><input name="date" type="date" defaultValue={initial?.date ?? todayIso()} required /></Field>
         </div>
         <Field label="Danh mục"><select name="category" defaultValue={initial?.category ?? "Ăn uống"}>{Object.keys(CATS).map((c) => <option key={c}>{c}</option>)}</select></Field>
@@ -60,11 +60,11 @@ export function ShiftForm({ initial, onClose }: { initial?: Shift; onClose: () =
         </div>
         <div className="formgrid">
           <Field label="Số giờ chạy"><input type="number" step="0.5" min="0.5" name="hours" defaultValue={initial?.hours ?? 4} required /></Field>
-          <Field label="Thu nhập ca (đ)"><input type="number" min="0" name="earnings" defaultValue={initial?.earnings ?? 0} required /></Field>
+          <Field label="Thu nhập ca (đ)"><MoneyInput name="earnings" defaultValue={initial?.earnings ?? 0} required /></Field>
         </div>
         <div className="formgrid">
-          <Field label="Xăng phân bổ cho ca (đ)"><input type="number" min="0" name="fuel_cost" defaultValue={initial?.fuel_cost ?? 0} required /></Field>
-          <Field label="Chi phí khác (đ)"><input type="number" min="0" name="other_cost" defaultValue={initial?.other_cost ?? 0} required /></Field>
+          <Field label="Xăng phân bổ cho ca (đ)"><MoneyInput name="fuel_cost" defaultValue={initial?.fuel_cost ?? 0} required /></Field>
+          <Field label="Chi phí khác (đ)"><MoneyInput name="other_cost" defaultValue={initial?.other_cost ?? 0} required /></Field>
         </div>
         {err && <p className="errtxt">{err}</p>}
         <div className="hint">Xăng phân bổ chỉ để tính lợi nhuận của ca, <b>không tính thêm vào tiền đã chi</b> vì tiền xăng đã ghi khi đổ xăng ở trang Chi tiêu.</div>
