@@ -17,7 +17,7 @@ const NAV: [string, string, string, string][] = [
 
 export default function Shell({ children }: { children: React.ReactNode }) {
   const path = usePathname();
-  const { ready, local, email, logout } = useApp();
+  const { ready, local } = useApp();
   const [open, setOpen] = useState(false);
   const [now, setNow] = useState<Date | null>(null);
   useEffect(() => { setNow(new Date()); const t = setInterval(() => setNow(new Date()), 30000); return () => clearInterval(t); }, []);
@@ -42,7 +42,10 @@ export default function Shell({ children }: { children: React.ReactNode }) {
           ))}
         </nav>
         <div className="navfoot">
-          {email && <><div className="sidebarhint" style={{ paddingTop: 0 }}>{email}</div><button className="btn logoutbtn" onClick={logout}>Đăng xuất</button></>}
+          <Link href="/tro-ly-ai" className={`aibtn ${path === "/tro-ly-ai" ? "active" : ""}`}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z" /><path d="M18 15l.8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8z" /></svg>
+            Trợ lý AI
+          </Link>
           {local && <div className="sidebarhint">CHẾ ĐỘ CỤC BỘ · CHƯA NỐI SUPABASE</div>}
         </div>
       </aside>
