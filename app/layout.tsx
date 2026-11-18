@@ -1,9 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { Be_Vietnam_Pro } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import "./demo.css";
 
-const be = Be_Vietnam_Pro({ subsets: ["vietnamese", "latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-be" });
+const inter = Inter({ subsets: ["vietnamese", "latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-inter" });
 export const metadata: Metadata = {
   title: "Bùi Thế Kiệt — Chi tiêu & ShopeeFood",
   description: "Quản lý chi tiêu và thu nhập ShopeeFood",
@@ -14,5 +14,5 @@ export const metadata: Metadata = {
 export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#7c3aed" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return <html lang="vi"><body className={be.variable} style={{ fontFamily: "var(--font-be), 'Segoe UI', Arial, sans-serif" }}>{children}</body></html>;
+  return <html lang="vi"><body className={inter.variable} style={{ fontFamily: "var(--font-inter), 'Segoe UI', Arial, sans-serif" }}>{children}</body></html>;
 }
