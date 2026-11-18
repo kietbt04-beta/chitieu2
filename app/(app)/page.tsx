@@ -32,7 +32,7 @@ export default function Overview() {
       <PageHead title="Dashboard" sub="Đã chi những gì và thu nhập ShopeeFood được bao nhiêu?" />
       <div className="period" style={{ display: "inline-flex", marginBottom: 20 }} role="tablist">
         {TABS.map(([k, label]) => (
-          <button key={k} role="tab" aria-selected={view === k} className={view === k ? "active" : ""} style={{ padding: "10px 22px", fontSize: 13 }} onClick={() => setView(k)}>{label}</button>
+          <button key={k} role="tab" aria-selected={view === k} className={view === k ? "active" : ""} style={{ padding: "10px 22px", fontSize: 15 }} onClick={() => setView(k)}>{label}</button>
         ))}
       </div>
       <PeriodFilter />

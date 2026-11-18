@@ -22,7 +22,7 @@ export default function Expenses() {
       <PeriodFilter />
       <div className="equal2">
         <Card title="Chi tiêu trong kỳ" chip="Đã thực chi">
-          <div style={{ fontSize: 31, fontWeight: 850, color: "#ea5964", margin: "14px 0" }}>{fmt(sum(inPeriod.map((e) => e.amount)))}</div>
+          <div style={{ fontSize: 36, fontWeight: 850, color: "#ea5964", margin: "14px 0" }}>{fmt(sum(inPeriod.map((e) => e.amount)))}</div>
           <div className="simplehint">{inPeriod.length} khoản chi. Mỗi khoản chỉ được tính một lần.</div>
         </Card>
         <Donut data={byCategory(inPeriod)} />

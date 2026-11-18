@@ -59,7 +59,7 @@ export function Donut({ data }: { data: [string, number][] }) {
     <Card title="Chi tiêu theo danh mục" chip="Trong kỳ">
       <div className="ringlayout">
         <div className="donut" style={{ background: `conic-gradient(${grad || "#ddd 0 100%"})` }}>
-          <div><div style={{ fontSize: 9, fontWeight: 500 }}>TỔNG CHI<strong style={{ fontSize: 14, display: "block", marginTop: 3 }}>{fmt(total)}</strong></div></div>
+          <div><div style={{ fontSize: 10.5, fontWeight: 500 }}>TỔNG CHI<strong style={{ fontSize: 15, display: "block", marginTop: 3 }}>{fmt(total)}</strong></div></div>
         </div>
         <div className="catlist">
           {data.length === 0 && <span className="muted small">Chưa có khoản chi.</span>}

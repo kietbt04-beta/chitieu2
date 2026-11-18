@@ -8,7 +8,7 @@ export default function ForecastCard({ title, noun, f, color, good }: { title: s
   return (
     <Card title={title} chip={f.label}>
       <div className="muted small">Dự đoán cả tháng</div>
-      <div style={{ fontSize: 30, fontWeight: 850, letterSpacing: -0.8, margin: "6px 0 14px", color }}>{fmt(f.projected)}</div>
+      <div style={{ fontSize: 34, fontWeight: 850, letterSpacing: -0.8, margin: "6px 0 14px", color }}>{fmt(f.projected)}</div>
       <div className="reportbar" style={{ margin: "0 0 14px" }}>
         <div className="track"><div style={{ width: `${pct}%`, background: color }} /></div>
       </div>
