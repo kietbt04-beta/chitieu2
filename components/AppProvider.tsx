@@ -1,12 +1,11 @@
 "use client";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { Data, EMPTY, Expense, Salary, Shift, Table } from "@/lib/types";
+import { Data, EMPTY, Row, Table } from "@/lib/types";
 import { Repo, localRepo, supabaseRepo } from "@/lib/repo";
 import { getSupabase, supabaseConfigured } from "@/lib/supabase";
 import { Period, getRange } from "@/lib/period";
 
-type Row = Expense | Shift | Salary;
 interface Ctx {
   data: Data; ready: boolean; local: boolean; email: string | null;
   period: Period; shift: number; setPeriod(p: Period): void; setShift(n: number): void; range: ReturnType<typeof getRange>;
@@ -71,7 +70,7 @@ export default function AppProvider({ children }: { children: React.ReactNode })
   }, [persist]);
 
   const remove = useCallback(async (table: Table, id: string) =>
-    persist((d) => ({ ...d, [table]: (d[table] as Row[]).filter((x) => x.id !== id) }) as Data, () => repo.current!.remove(table, id)), [persist]);
+    persist((d) => ({ ...d, [table]: (d[table] as Row[]).filter((x) => x.id !== id), ...(table === "debts" ? { debtPayments: d.debtPayments.filter((p) => p.debt_id !== id) } : {}) }) as Data, () => repo.current!.remove(table, id)), [persist]);
 
   const logout = useCallback(async () => { await getSupabase()?.auth.signOut(); router.replace("/login"); }, [router]);
   const setPeriod = (p: Period) => { setPeriodState(p); setShift(0); };
@@ -87,4 +86,3 @@ export default function AppProvider({ children }: { children: React.ReactNode })
     </C.Provider>
   );
 }
-export type { Expense, Shift, Salary };

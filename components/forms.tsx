@@ -1,6 +1,8 @@
 "use client";
 import { FormEvent, useState } from "react";
-import { CATS, Expense, Shift } from "@/lib/types";
+import { CATS, Debt, DebtPayment, Expense, Income, Shift } from "@/lib/types";
+import { debtStatus } from "@/lib/calc";
+import { fmt } from "@/lib/format";
 import { todayIso, uid } from "@/lib/format";
 import { useApp } from "./AppProvider";
 import { Field, Modal, MoneyInput } from "./ui";
@@ -69,6 +71,92 @@ export function ShiftForm({ initial, onClose }: { initial?: Shift; onClose: () =
         {err && <p className="errtxt">{err}</p>}
         <div className="hint">Xăng phân bổ chỉ để tính lợi nhuận của ca, <b>không tính thêm vào tiền đã chi</b> vì tiền xăng đã ghi khi đổ xăng ở trang Chi tiêu.</div>
         <Footer onClose={onClose} label="Lưu ca làm việc" busy={busy} />
+      </form>
+    </Modal>
+  );
+}
+
+export function IncomeForm({ initial, onClose }: { initial?: Income; onClose: () => void }) {
+  const { save, toast } = useApp();
+  const [busy, setBusy] = useState(false); const [err, setErr] = useState("");
+  async function submit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault(); const fd = new FormData(e.currentTarget);
+    const amount = num(fd, "amount"), source = str(fd, "source");
+    if (!source) return setErr("Nhập nguồn thu nhập (công việc).");
+    if (!Number.isFinite(amount) || amount <= 0) return setErr("Số tiền phải lớn hơn 0.");
+    setBusy(true);
+    const ok = await save("incomes", { id: initial?.id ?? uid(), source, amount: Math.round(amount), date: str(fd, "date") } satisfies Income);
+    setBusy(false); if (ok) { toast(initial ? "Đã cập nhật thu nhập." : "Đã thêm thu nhập."); onClose(); }
+  }
+  return (
+    <Modal title={initial ? "Sửa thu nhập khác" : "Thêm thu nhập từ công việc khác"} onClose={onClose}>
+      <form onSubmit={submit}>
+        <Field label="Công việc / nguồn thu"><input name="source" defaultValue={initial?.source} placeholder="Ví dụ: Làm thêm, bán hàng, freelance..." required autoFocus /></Field>
+        <div className="formgrid">
+          <Field label="Số tiền nhận (đ)"><MoneyInput name="amount" defaultValue={initial?.amount} required /></Field>
+          <Field label="Ngày nhận"><input name="date" type="date" defaultValue={initial?.date ?? todayIso()} required /></Field>
+        </div>
+        {err && <p className="errtxt">{err}</p>}
+        <div className="hint">Khoản này được cộng vào <b>Tổng thu nhập</b> trong Báo cáo tháng, cùng với lương và ShopeeFood. Không hiện ở Dashboard.</div>
+        <Footer onClose={onClose} label="Lưu thu nhập" busy={busy} />
+      </form>
+    </Modal>
+  );
+}
+
+export function DebtForm({ initial, onClose }: { initial?: Debt; onClose: () => void }) {
+  const { data, save, toast } = useApp();
+  const [busy, setBusy] = useState(false); const [err, setErr] = useState("");
+  async function submit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault(); const fd = new FormData(e.currentTarget);
+    const total = num(fd, "total"), name = str(fd, "name");
+    if (!name) return setErr("Nhập tên khoản nợ.");
+    if (!Number.isFinite(total) || total <= 0) return setErr("Số tiền nợ phải lớn hơn 0.");
+    if (initial && total < debtStatus(data, initial.id).paid) return setErr("Tổng nợ không được nhỏ hơn số tiền đã trả.");
+    setBusy(true);
+    const ok = await save("debts", { id: initial?.id ?? uid(), name, total: Math.round(total), date: str(fd, "date") } satisfies Debt);
+    setBusy(false); if (ok) { toast(initial ? "Đã cập nhật khoản nợ." : "Đã thêm khoản nợ."); onClose(); }
+  }
+  return (
+    <Modal title={initial ? "Sửa khoản nợ" : "Thêm khoản nợ"} onClose={onClose}>
+      <form onSubmit={submit}>
+        <Field label="Tên khoản nợ / người cho vay"><input name="name" defaultValue={initial?.name} placeholder="Ví dụ: Nợ anh Hai, trả góp xe..." required autoFocus /></Field>
+        <div className="formgrid">
+          <Field label="Tổng số tiền nợ (đ)"><MoneyInput name="total" defaultValue={initial?.total} required /></Field>
+          <Field label="Ngày vay"><input name="date" type="date" defaultValue={initial?.date ?? todayIso()} required /></Field>
+        </div>
+        {err && <p className="errtxt">{err}</p>}
+        <div className="hint">Mỗi lần trả nợ ghi riêng bằng nút “Trả nợ”; web tự tính số đã trả và còn nợ.</div>
+        <Footer onClose={onClose} label="Lưu khoản nợ" busy={busy} />
+      </form>
+    </Modal>
+  );
+}
+
+export function PaymentForm({ debt, initial, onClose }: { debt: Debt; initial?: DebtPayment; onClose: () => void }) {
+  const { data, save, toast } = useApp();
+  const [busy, setBusy] = useState(false); const [err, setErr] = useState("");
+  const st = debtStatus(data, debt.id);
+  const room = st.remaining + (initial?.amount ?? 0);
+  async function submit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault(); const fd = new FormData(e.currentTarget);
+    const amount = num(fd, "amount");
+    if (!Number.isFinite(amount) || amount <= 0) return setErr("Số tiền phải lớn hơn 0.");
+    if (amount > room) return setErr(`Số tiền trả vượt quá số còn nợ (${fmt(room)}).`);
+    setBusy(true);
+    const ok = await save("debtPayments", { id: initial?.id ?? uid(), debt_id: debt.id, amount: Math.round(amount), date: str(fd, "date") } satisfies DebtPayment);
+    setBusy(false); if (ok) { toast("Đã ghi lần trả nợ."); onClose(); }
+  }
+  return (
+    <Modal title={`Trả nợ: ${debt.name}`} onClose={onClose}>
+      <form onSubmit={submit}>
+        <div className="formgrid">
+          <Field label="Số tiền trả (đ)"><MoneyInput name="amount" defaultValue={initial?.amount} required /></Field>
+          <Field label="Ngày trả"><input name="date" type="date" defaultValue={initial?.date ?? todayIso()} required /></Field>
+        </div>
+        {err && <p className="errtxt">{err}</p>}
+        <div className="hint">Còn nợ: <b>{fmt(room)}</b>. Khoản trả nợ hiện riêng trong Báo cáo tháng, không bị tính trùng vào Chi tiêu hằng ngày.</div>
+        <Footer onClose={onClose} label="Lưu lần trả" busy={busy} />
       </form>
     </Modal>
   );

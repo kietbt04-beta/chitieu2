@@ -9,7 +9,9 @@ const NAV: [string, string, string, string][] = [
   ["CHI TIÊU", "/chi-tieu", "▤", "Chi tiêu hằng ngày"],
   ["", "/danh-muc", "◈", "Danh mục chi tiêu"],
   ["CÔNG VIỆC", "/shopee", "♧", "Tài xế ShopeeFood"],
-  ["TÀI CHÍNH CÁ NHÂN", "/bao-cao", "◩", "Báo cáo tháng"],
+  ["", "/thu-nhap-khac", "✚", "Thu nhập khác"],
+  ["TÀI CHÍNH CÁ NHÂN", "/khoan-no", "⚖", "Khoản nợ"],
+  ["", "/bao-cao", "◩", "Báo cáo tháng"],
 ];
 
 export default function Shell({ children }: { children: React.ReactNode }) {

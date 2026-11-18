@@ -1,4 +1,4 @@
-import { Salary, Shift } from "./types";
+import { Data, Salary, Shift } from "./types";
 import type { Period } from "./period";
 
 export const sum = (a: number[]) => a.reduce((t, x) => t + x, 0);
@@ -16,4 +16,12 @@ export function salaryInRange(salaries: Salary[], range: { start: string; end: s
   if (period === "Ngày" || period === "Tuần") return 0;
   const a = range.start.slice(0, 7), b = range.end.slice(0, 7);
   return sum(salaries.filter((s) => s.month >= a && s.month <= b).map((s) => s.amount));
+}
+
+/** Số đã trả, còn nợ của một khoản nợ. */
+export function debtStatus(d: Data, debtId: string) {
+  const debt = d.debts.find((x) => x.id === debtId);
+  const paid = sum(d.debtPayments.filter((p) => p.debt_id === debtId).map((p) => p.amount));
+  const total = debt?.total ?? 0;
+  return { total, paid, remaining: Math.max(total - paid, 0) };
 }
