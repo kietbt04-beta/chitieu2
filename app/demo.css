@@ -48,3 +48,9 @@ body.dark .datepill{background:#143a2e;border-color:#237a58;color:#6ee7b7}
 .mobilebtn{width:32px}
 }
 .topbarlink{display:contents}
+/* Điện thoại: ô ngày giờ nằm bên phải, sát chuông thông báo */
+@media(max-width:650px){
+.topbar>div:first-child{flex:1;min-width:0}
+.datewrap{margin-left:auto}
+.datepop{left:auto;right:0}
+}
