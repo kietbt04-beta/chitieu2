@@ -20,10 +20,12 @@ export default function Shell({ children }: { children: React.ReactNode }) {
   const { ready, local } = useApp();
   const [open, setOpen] = useState(false);
   const [now, setNow] = useState<Date | null>(null);
+  const [dateOpen, setDateOpen] = useState(false);
   useEffect(() => { setNow(new Date()); const t = setInterval(() => setNow(new Date()), 30000); return () => clearInterval(t); }, []);
   useEffect(() => setOpen(false), [path]);
   const days = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
   const p = (n: number) => String(n).padStart(2, "0");
+  const short = now ? `${p(now.getDate())}/${p(now.getMonth() + 1)} ${p(now.getHours())}:${p(now.getMinutes())}` : "…";
   const when = now ? `${days[now.getDay()]}, ${p(now.getDate())}/${p(now.getMonth() + 1)}/${now.getFullYear()} · ${p(now.getHours())}:${p(now.getMinutes())}` : "…";
 
   return (
@@ -54,7 +56,15 @@ export default function Shell({ children }: { children: React.ReactNode }) {
         <header className="topbar">
           <div style={{ display: "flex", gap: 9, alignItems: "center" }}>
             <button className="iconbtn mobilebtn" aria-label="Mở menu" onClick={() => setOpen(true)}>☰</button>
-            <div className="datepill">◷ <span>{when}</span></div>
+            <img className="avatarimg topbarlogo" src="/avatar-256.png" alt="Kiệt Beta" width={40} height={40} />
+            <div className="datewrap">
+              <button className="datepill" aria-expanded={dateOpen} onClick={() => setDateOpen((v) => !v)}>
+                <svg className="dpclock" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg>
+                <span className="dp-long">{when}</span><span className="dp-short">{short}</span>
+                <svg className="dpchev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+              </button>
+              {dateOpen && <div className="datepop" onClick={() => setDateOpen(false)}>{when}</div>}
+            </div>
           </div>
           <TopbarRight />
         </header>
