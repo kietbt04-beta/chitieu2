@@ -36,3 +36,14 @@ body.dark .datepill{background:#143a2e;border-color:#237a58;color:#6ee7b7}
 .accavatar{width:42px;height:42px}
 .mobilebtn{border:0;background:transparent;width:36px}
 }
+/* Thu nhỏ nhẹ các nút trên thanh trên cùng (điện thoại) */
+@media(max-width:650px){
+.topbar{height:58px}
+.datepill{padding:5px 9px;gap:5px;font-size:12.5px;border-radius:11px}
+.datepill .dpclock{width:15px;height:15px}.datepill .dpchev{width:13px;height:13px}
+.bellbtn{width:34px;height:34px}.bellbtn svg{width:18px;height:18px}
+.badgecount{min-width:17px;height:17px;font-size:10px;top:-4px;right:-5px;padding:0 4px}
+.accavatar{width:34px;height:34px;font-size:14px}
+.topbarlogo{width:34px;height:34px}
+.mobilebtn{width:32px}
+}
