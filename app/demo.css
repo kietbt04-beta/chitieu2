@@ -70,3 +70,16 @@ body.dark .datepill{background:#143a2e;border-color:#237a58;color:#6ee7b7}
 .lg-foot{font-size:17px;color:var(--muted);margin:0;text-align:center}.lg-foot .lg-link{font-size:17px}
 body.dark .lg-card,body.dark .lg-field input,body.dark .lg-google{border-color:#29304c}body.dark .lg-link{color:#7db4ff}
 @media(max-width:480px){.lg-card{padding:28px 20px 26px;border-radius:24px}.lg-name{font-size:22px}}
+/* Trang đăng nhập: thu nhỏ chữ và khung */
+.lg-page{gap:20px;padding:24px 16px}
+.lg-card{max-width:400px;padding:28px 26px 26px;border-radius:24px}
+.lg-brand{gap:12px;margin-bottom:22px}.lg-logo{width:52px;height:52px;border-radius:14px}
+.lg-name{font-size:19px;letter-spacing:.5px}.lg-sub{font-size:14px;margin-top:2px}
+.lg-google{height:50px;gap:12px;font-size:15px;border-radius:14px}
+.lg-or{margin:20px 0;font-size:12.5px}
+.lg-label{font-size:14.5px;margin-bottom:8px}
+.lg-field{margin-bottom:16px}.lg-field input{height:50px;font-size:15px;padding-left:50px;border-radius:14px}.lg-ico{left:15px;width:19px;height:19px}
+.lg-link{font-size:14px}.lg-foot .lg-link,.lg-foot{font-size:14.5px}
+.lg-submit{height:50px;font-size:16px;border-radius:13px;margin-top:6px}
+.lg-err,.lg-info{font-size:13.5px}
+@media(max-width:480px){.lg-card{padding:24px 18px 22px;border-radius:22px}.lg-name{font-size:18px}}

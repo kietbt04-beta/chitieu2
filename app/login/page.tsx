@@ -62,7 +62,7 @@ export default function Login() {
         <div className="lg-brand">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/avatar-256.png" alt="Kiệt Beta" width={64} height={64} className="lg-logo" />
-          <div><div className="lg-name">Kiệt Beta</div><div className="lg-sub">{title}</div></div>
+          <div><div className="lg-name">KIET BETA</div><div className="lg-sub">{title}</div></div>
         </div>
 
         {mode !== "forgot" && google && (

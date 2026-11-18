@@ -27,7 +27,7 @@ export default function ResetPassword() {
       <div className="lg-brand">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/avatar-256.png" alt="Kiệt Beta" width={64} height={64} className="lg-logo" />
-        <div><div className="lg-name">Kiệt Beta</div><div className="lg-sub">Đặt lại mật khẩu</div></div>
+        <div><div className="lg-name">KIET BETA</div><div className="lg-sub">Đặt lại mật khẩu</div></div>
       </div>
       {!ready ? <p className="lg-info">Đang xác thực liên kết… Nếu trang không chuyển tiếp, hãy mở lại liên kết trong email hoặc yêu cầu liên kết mới ở trang đăng nhập.</p> : (
         <form onSubmit={submit}>
