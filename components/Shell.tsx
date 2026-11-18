@@ -3,6 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useApp } from "./AppProvider";
+import TopbarRight from "./TopbarRight";
 
 const NAV: [string, string, string, string][] = [
   ["TRANG CHÍNH", "/", "▦", "Dashboard"],
@@ -16,7 +17,7 @@ const NAV: [string, string, string, string][] = [
 
 export default function Shell({ children }: { children: React.ReactNode }) {
   const path = usePathname();
-  const { ready, local, email, logout, dark, toggleDark } = useApp();
+  const { ready, local, email, logout } = useApp();
   const [open, setOpen] = useState(false);
   const [now, setNow] = useState<Date | null>(null);
   useEffect(() => { setNow(new Date()); const t = setInterval(() => setNow(new Date()), 30000); return () => clearInterval(t); }, []);
@@ -52,10 +53,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
             <button className="iconbtn mobilebtn" aria-label="Mở menu" onClick={() => setOpen(true)}>☰</button>
             <div className="datepill">◷ <span>{when}</span></div>
           </div>
-          <div className="topright">
-            {local && <span className="localtag demotag-lite">DỮ LIỆU TRONG TRÌNH DUYỆT</span>}
-            <button className="iconbtn" title="Đổi giao diện sáng/tối" onClick={toggleDark}>{dark ? "☀" : "☾"}</button>
-          </div>
+          <TopbarRight />
         </header>
         <main className="content">{ready ? children : <div className="card">Đang tải dữ liệu…</div>}</main>
       </div>
