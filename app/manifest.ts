@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Chi tiêu Kiệt",
-    short_name: "Chi tiêu Kiệt",
+    name: "Kiệt Beta",
+    short_name: "Kiệt Beta",
     description: "Quản lý chi tiêu và thu nhập ShopeeFood",
     start_url: "/",
     scope: "/",

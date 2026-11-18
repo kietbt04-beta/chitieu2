@@ -7,9 +7,9 @@ const jakarta = Plus_Jakarta_Sans({ subsets: ["vietnamese", "latin"], weight: ["
 export const metadata: Metadata = {
   title: "Kiệt Beta",
   description: "Quản lý chi tiêu và thu nhập ShopeeFood",
-  applicationName: "Chi tiêu Kiệt",
+  applicationName: "Kiệt Beta",
   icons: { icon: "/icon-192.png", apple: "/icon-192.png" },
-  appleWebApp: { capable: true, title: "Chi tiêu Kiệt", statusBarStyle: "default" },
+  appleWebApp: { capable: true, title: "Kiệt Beta", statusBarStyle: "default" },
 };
 export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#7c3aed" };
 
