@@ -5,7 +5,7 @@ import "./demo.css";
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ["vietnamese", "latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-jakarta" });
 export const metadata: Metadata = {
-  title: "Bùi Thế Kiệt — Chi tiêu & ShopeeFood",
+  title: "Kiệt Beta",
   description: "Quản lý chi tiêu và thu nhập ShopeeFood",
   applicationName: "Chi tiêu Kiệt",
   icons: { icon: "/icon-192.png", apple: "/icon-192.png" },
